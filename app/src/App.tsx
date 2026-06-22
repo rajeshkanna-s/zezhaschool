@@ -22,6 +22,10 @@ import AdminCourses from './pages/admin/AdminCourses';
 import AdminCourseForm from './pages/admin/AdminCourseForm';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminSubscriptions from './pages/admin/AdminSubscriptions';
+import AdminUserMIS from './pages/admin/AdminUserMIS';
+import AdminSubscriptionMIS from './pages/admin/AdminSubscriptionMIS';
+import AdminLoginHistoryMIS from './pages/admin/AdminLoginHistoryMIS';
+import AdminCoursesMIS from './pages/admin/AdminCoursesMIS';
 
 export default function App() {
   return (
@@ -79,6 +83,10 @@ export default function App() {
             <Route path="courses/:id" element={<AdminCourseForm />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="subscriptions" element={<AdminSubscriptions />} />
+            <Route path="mis/users" element={<AdminUserMIS />} />
+            <Route path="mis/subscriptions" element={<AdminSubscriptionMIS />} />
+            <Route path="mis/login-history" element={<AdminLoginHistoryMIS />} />
+            <Route path="mis/courses" element={<AdminCoursesMIS />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

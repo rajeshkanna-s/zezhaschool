@@ -36,7 +36,7 @@ export default function AdminLogin() {
 
     const { data: profile } = await supabase
       .from('profiles')
-      .select('role')
+      .select('role, full_name')
       .eq('id', data.user.id)
       .single();
 
@@ -46,6 +46,14 @@ export default function AdminLogin() {
       setLoading(false);
       return;
     }
+
+    await supabase.from('login_history').insert({
+      user_id: data.user.id,
+      email,
+      full_name: profile.full_name ?? 'Admin',
+      role: 'admin',
+      status: 'success',
+    });
 
     toast.success('Welcome, Admin!');
     navigate('/admin');

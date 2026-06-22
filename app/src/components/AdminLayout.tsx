@@ -3,7 +3,8 @@ import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
   FiHome, FiBook, FiUsers, FiCreditCard,
-  FiSettings, FiLogOut, FiMenu, FiShield
+  FiSettings, FiLogOut, FiMenu, FiShield,
+  FiBarChart2, FiClock
 } from 'react-icons/fi';
 
 const adminNav = [
@@ -14,6 +15,13 @@ const adminNav = [
   { to: '/admin/settings', icon: <FiSettings />, label: 'Settings' },
 ];
 
+const misNav = [
+  { to: '/admin/mis/users', icon: <FiUsers />, label: 'User MIS' },
+  { to: '/admin/mis/subscriptions', icon: <FiCreditCard />, label: 'Subscription MIS' },
+  { to: '/admin/mis/login-history', icon: <FiClock />, label: 'Login History MIS' },
+  { to: '/admin/mis/courses', icon: <FiBook />, label: 'Courses MIS' },
+];
+
 const pageTitles: Record<string, string> = {
   '/admin': 'Admin Dashboard',
   '/admin/courses': 'Course Management',
@@ -21,6 +29,10 @@ const pageTitles: Record<string, string> = {
   '/admin/users': 'User Management',
   '/admin/subscriptions': 'Subscriptions',
   '/admin/settings': 'Admin Settings',
+  '/admin/mis/users': 'User MIS Report',
+  '/admin/mis/subscriptions': 'Subscription MIS Report',
+  '/admin/mis/login-history': 'Login History MIS',
+  '/admin/mis/courses': 'Courses MIS Report',
 };
 
 export default function AdminLayout() {
@@ -53,6 +65,22 @@ export default function AdminLayout() {
                 key={item.to}
                 to={item.to}
                 end={item.end}
+                className={({ isActive }) =>
+                  `sidebar-link ${isActive ? 'active' : ''}`
+                }
+                onClick={() => setSidebarOpen(false)}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </NavLink>
+            ))}
+          </div>
+          <div className="sidebar-section">
+            <div className="sidebar-section-title"><FiBarChart2 style={{ marginRight: 4 }} />MIS Reports</div>
+            {misNav.map(item => (
+              <NavLink
+                key={item.to}
+                to={item.to}
                 className={({ isActive }) =>
                   `sidebar-link ${isActive ? 'active' : ''}`
                 }

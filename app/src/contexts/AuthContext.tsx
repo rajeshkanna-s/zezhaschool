@@ -167,6 +167,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (data.user) {
       await fetchProfile(data.user.id);
       await createSessionRecord(data.user.id);
+      const p = await supabase.from('profiles').select('full_name, role').eq('id', data.user.id).single();
+      await supabase.from('login_history').insert({
+        user_id: data.user.id,
+        email,
+        full_name: p.data?.full_name ?? '',
+        role: p.data?.role ?? 'student',
+        status: 'success',
+      });
     }
 
     return { error: null };
@@ -184,6 +192,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       await fetchProfile(data.user.id);
       await createSessionRecord(data.user.id);
+      const p = await supabase.from('profiles').select('full_name, role').eq('id', data.user.id).single();
+      await supabase.from('login_history').insert({
+        user_id: data.user.id,
+        email,
+        full_name: p.data?.full_name ?? '',
+        role: p.data?.role ?? 'student',
+        status: 'success',
+      });
     }
     return { error: null };
   };
