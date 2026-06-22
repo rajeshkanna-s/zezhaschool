@@ -3,6 +3,9 @@ import { supabase } from '../../lib/supabase';
 import type { Profile } from '../../types';
 import { FiDownload, FiSearch, FiUsers, FiUserCheck, FiUserX } from 'react-icons/fi';
 import { exportToExcel } from '../../utils/exportExcel';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+const COLORS = ['#4f46e5', '#16a34a', '#dc2626', '#d97706', '#7c3aed', '#0891b2'];
 
 export default function AdminUserMIS() {
   const [users, setUsers] = useState<Profile[]>([]);
@@ -43,6 +46,27 @@ export default function AdminUserMIS() {
   const totalInactive = users.filter(u => !u.is_active).length;
   const totalStudents = users.filter(u => u.role === 'student').length;
   const totalAdmins = users.filter(u => u.role === 'admin').length;
+
+  const roleData = [
+    { name: 'Students', value: totalStudents },
+    { name: 'Admins', value: totalAdmins },
+  ].filter(d => d.value > 0);
+
+  const statusData = [
+    { name: 'Active', value: totalActive },
+    { name: 'Inactive', value: totalInactive },
+  ].filter(d => d.value > 0);
+
+  const monthlyData = (() => {
+    const months: Record<string, { month: string; students: number; admins: number }> = {};
+    users.forEach(u => {
+      const m = new Date(u.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+      if (!months[m]) months[m] = { month: m, students: 0, admins: 0 };
+      if (u.role === 'admin') months[m].admins++;
+      else months[m].students++;
+    });
+    return Object.values(months).reverse();
+  })();
 
   const handleExport = () => {
     exportToExcel(
@@ -114,6 +138,52 @@ export default function AdminUserMIS() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Charts */}
+      <div className="row g-3 mb-4">
+        <div className="col-md-4">
+          <div className="content-card" style={{ padding: '16px' }}>
+            <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Role Distribution</h6>
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie data={roleData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                  {roleData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="content-card" style={{ padding: '16px' }}>
+            <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Active vs Inactive</h6>
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie data={statusData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                  {statusData.map((_, i) => <Cell key={i} fill={[COLORS[1], COLORS[2]][i]} />)}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="content-card" style={{ padding: '16px' }}>
+            <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Monthly Registrations</h6>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={monthlyData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                <Tooltip />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar dataKey="students" name="Students" fill="#4f46e5" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="admins" name="Admins" fill="#d97706" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
 
       {/* Filters */}

@@ -3,6 +3,9 @@ import { supabase } from '../../lib/supabase';
 import type { Course } from '../../types';
 import { FiDownload, FiSearch, FiBook, FiCheckCircle, FiClock, FiXCircle } from 'react-icons/fi';
 import { exportToExcel } from '../../utils/exportExcel';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+const COLORS = ['#4f46e5', '#16a34a', '#d97706', '#7c3aed', '#dc2626', '#0891b2'];
 
 interface CourseWithStats extends Course {
   enrollment_count: number;
@@ -78,6 +81,26 @@ export default function AdminCoursesMIS() {
   const pending = courses.filter(c => c.status === 'pending_review').length;
   const totalEnrollments = courses.reduce((sum, c) => sum + c.enrollment_count, 0);
   const freeCourses = courses.filter(c => c.is_free).length;
+
+  const statusPieData = [
+    { name: 'Published', value: published },
+    { name: 'Draft', value: draft },
+    { name: 'Pending', value: pending },
+    { name: 'Approved', value: courses.filter(c => c.status === 'approved').length },
+    { name: 'Rejected', value: courses.filter(c => c.status === 'rejected').length },
+  ].filter(d => d.value > 0);
+
+  const categoryData = (() => {
+    const cats: Record<string, number> = {};
+    courses.forEach(c => { cats[c.category] = (cats[c.category] || 0) + 1; });
+    return Object.entries(cats).map(([name, value]) => ({ name, value }));
+  })();
+
+  const difficultyData = [
+    { name: 'Beginner', count: courses.filter(c => c.difficulty === 'beginner').length },
+    { name: 'Intermediate', count: courses.filter(c => c.difficulty === 'intermediate').length },
+    { name: 'Advanced', count: courses.filter(c => c.difficulty === 'advanced').length },
+  ];
 
   const handleExport = () => {
     exportToExcel(
@@ -156,6 +179,52 @@ export default function AdminCoursesMIS() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Charts */}
+      <div className="row g-3 mb-4">
+        <div className="col-md-4">
+          <div className="content-card" style={{ padding: '16px' }}>
+            <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Course Status</h6>
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie data={statusPieData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                  {statusPieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="content-card" style={{ padding: '16px' }}>
+            <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>By Category</h6>
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie data={categoryData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                  {categoryData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="content-card" style={{ padding: '16px' }}>
+            <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Difficulty Levels</h6>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={difficultyData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                <Tooltip />
+                <Bar dataKey="count" name="Courses" fill="#4f46e5" radius={[4, 4, 0, 0]}>
+                  {difficultyData.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
 
       {/* Filters */}

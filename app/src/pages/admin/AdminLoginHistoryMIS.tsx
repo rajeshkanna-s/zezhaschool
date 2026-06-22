@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { FiDownload, FiSearch, FiClock, FiUser, FiShield } from 'react-icons/fi';
 import { exportToExcel } from '../../utils/exportExcel';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+const COLORS = ['#4f46e5', '#16a34a', '#dc2626', '#d97706', '#7c3aed'];
 
 interface LoginRecord {
   id: string;
@@ -51,6 +54,31 @@ export default function AdminLoginHistoryMIS() {
   const uniqueUsersToday = new Set(records.filter(r => r.login_at.slice(0, 10) === todayStr).map(r => r.user_id)).size;
   const studentLogins = records.filter(r => r.role === 'student').length;
   const adminLogins = records.filter(r => r.role === 'admin').length;
+
+  const roleLoginData = [
+    { name: 'Student Logins', value: studentLogins },
+    { name: 'Admin Logins', value: adminLogins },
+  ].filter(d => d.value > 0);
+
+  const dailyData = (() => {
+    const days: Record<string, { date: string; student: number; admin: number }> = {};
+    records.forEach(r => {
+      const d = new Date(r.login_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      if (!days[d]) days[d] = { date: d, student: 0, admin: 0 };
+      if (r.role === 'admin') days[d].admin++;
+      else days[d].student++;
+    });
+    return Object.values(days).reverse().slice(-14);
+  })();
+
+  const hourlyData = (() => {
+    const hours: Record<number, number> = {};
+    records.forEach(r => {
+      const h = new Date(r.login_at).getHours();
+      hours[h] = (hours[h] || 0) + 1;
+    });
+    return Array.from({ length: 24 }, (_, i) => ({ hour: `${i}:00`, logins: hours[i] || 0 }));
+  })();
 
   const handleExport = () => {
     exportToExcel(
@@ -118,6 +146,53 @@ export default function AdminLoginHistoryMIS() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Charts */}
+      <div className="row g-3 mb-4">
+        <div className="col-md-4">
+          <div className="content-card" style={{ padding: '16px' }}>
+            <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Login by Role</h6>
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie data={roleLoginData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name: string; percent: number }) => `${name.split(' ')[0]} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                  {roleLoginData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="content-card" style={{ padding: '16px' }}>
+            <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Daily Logins (Last 14 days)</h6>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={dailyData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                <Tooltip />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar dataKey="student" name="Student" fill="#4f46e5" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="admin" name="Admin" fill="#d97706" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="content-card" style={{ padding: '16px' }}>
+            <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Peak Login Hours</h6>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={hourlyData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="hour" tick={{ fontSize: 9 }} interval={2} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                <Tooltip />
+                <Bar dataKey="logins" name="Logins" fill="#16a34a" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
 
       {/* Filters */}

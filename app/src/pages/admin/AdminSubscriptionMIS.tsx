@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { FiDownload, FiSearch, FiCreditCard, FiCheckCircle, FiXCircle } from 'react-icons/fi';
 import { exportToExcel } from '../../utils/exportExcel';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+const COLORS = ['#16a34a', '#dc2626', '#64748b', '#4f46e5', '#d97706', '#7c3aed'];
 
 interface SubRecord {
   id: string;
@@ -50,6 +53,32 @@ export default function AdminSubscriptionMIS() {
   const expiredSubs = subs.filter(s => s.status === 'expired').length;
   const cancelledSubs = subs.filter(s => s.status === 'cancelled').length;
   const totalRevenue = subs.filter(s => s.status !== 'cancelled').reduce((sum, s) => sum + (s.plan?.price ?? 0), 0);
+
+  const statusPieData = [
+    { name: 'Active', value: activeSubs },
+    { name: 'Expired', value: expiredSubs },
+    { name: 'Cancelled', value: cancelledSubs },
+  ].filter(d => d.value > 0);
+
+  const planData = (() => {
+    const plans: Record<string, number> = {};
+    subs.forEach(s => {
+      const name = s.plan?.name ?? 'Unknown';
+      plans[name] = (plans[name] || 0) + 1;
+    });
+    return Object.entries(plans).map(([name, value]) => ({ name, value }));
+  })();
+
+  const monthlyRevenue = (() => {
+    const months: Record<string, { month: string; revenue: number; count: number }> = {};
+    subs.forEach(s => {
+      const m = new Date(s.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+      if (!months[m]) months[m] = { month: m, revenue: 0, count: 0 };
+      months[m].revenue += s.plan?.price ?? 0;
+      months[m].count++;
+    });
+    return Object.values(months).reverse();
+  })();
 
   const handleExport = () => {
     exportToExcel(
@@ -127,6 +156,51 @@ export default function AdminSubscriptionMIS() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Charts */}
+      <div className="row g-3 mb-4">
+        <div className="col-md-4">
+          <div className="content-card" style={{ padding: '16px' }}>
+            <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Subscription Status</h6>
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie data={statusPieData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                  {statusPieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="content-card" style={{ padding: '16px' }}>
+            <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Plan Distribution</h6>
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie data={planData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                  {planData.map((_, i) => <Cell key={i} fill={COLORS[(i + 3) % COLORS.length]} />)}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="content-card" style={{ padding: '16px' }}>
+            <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Monthly Revenue</h6>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={monthlyRevenue}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                <Tooltip formatter={(value) => [`₹${value}`, 'Revenue']} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar dataKey="revenue" name="Revenue (₹)" fill="#16a34a" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
 
       {/* Filters */}
