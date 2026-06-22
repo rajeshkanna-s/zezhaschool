@@ -1,8 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 import { FiMail, FiLock, FiAlertTriangle } from 'react-icons/fi';
 import toast from 'react-hot-toast';
+
+const ADMIN_EMAILS = [
+  'zezhaschool@zohomail.in',
+  'zezhaschool@gmail.com',
+  'zezhatalenties@gmail.com',
+];
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -18,6 +25,12 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
 
+    if (ADMIN_EMAILS.includes(email.toLowerCase().trim())) {
+      toast.error('Admin accounts must use the Admin Login page.');
+      setLoading(false);
+      return;
+    }
+
     const { error } = await signIn(email, password);
 
     if (error === 'ALREADY_LOGGED_IN') {
@@ -28,6 +41,20 @@ export default function Login() {
 
     if (error) {
       toast.error(error);
+      setLoading(false);
+      return;
+    }
+
+    // Double-check role after login
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('email', email.toLowerCase().trim())
+      .single();
+
+    if (profile?.role === 'admin') {
+      toast.error('Admin accounts must use the Admin Login page.');
+      await supabase.auth.signOut();
       setLoading(false);
       return;
     }

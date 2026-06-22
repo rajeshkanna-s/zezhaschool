@@ -1,25 +1,35 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { FiMail, FiLock, FiShield } from 'react-icons/fi';
 import toast from 'react-hot-toast';
+
+const ADMIN_EMAILS = [
+  'zezhaschool@zohomail.in',
+  'zezhaschool@gmail.com',
+  'zezhatalenties@gmail.com',
+];
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await signIn(email, password);
+    if (!ADMIN_EMAILS.includes(email.toLowerCase().trim())) {
+      toast.error('Access denied. This email is not authorized for admin access.');
+      setLoading(false);
+      return;
+    }
 
-    if (error && error !== 'ALREADY_LOGGED_IN') {
-      toast.error(error);
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      toast.error('Invalid credentials.');
       setLoading(false);
       return;
     }
@@ -27,7 +37,7 @@ export default function AdminLogin() {
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
-      .eq('email', email)
+      .eq('id', data.user.id)
       .single();
 
     if (!profile || profile.role !== 'admin') {

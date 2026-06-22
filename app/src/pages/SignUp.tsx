@@ -4,6 +4,12 @@ import { useAuth } from '../contexts/AuthContext';
 import { FiUser, FiMail, FiLock, FiPhone } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
+const ADMIN_EMAILS = [
+  'zezhaschool@zohomail.in',
+  'zezhaschool@gmail.com',
+  'zezhatalenties@gmail.com',
+];
+
 export default function SignUp() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -30,6 +36,11 @@ export default function SignUp() {
     const mobileRegex = /^[0-9]{10}$/;
     if (!mobileRegex.test(mobile)) {
       toast.error('Please enter a valid 10-digit mobile number');
+      return;
+    }
+
+    if (ADMIN_EMAILS.includes(email.toLowerCase().trim())) {
+      toast.error('This email is reserved. Please use a different email.');
       return;
     }
 
