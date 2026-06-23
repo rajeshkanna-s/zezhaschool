@@ -165,7 +165,7 @@ export default function AdminSubscriptionMIS() {
             <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Subscription Status</h6>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
-                <Pie data={statusPieData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                <Pie data={statusPieData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name?: string; percent?: number }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`} labelLine={false}>
                   {statusPieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Pie>
                 <Tooltip />
@@ -178,7 +178,7 @@ export default function AdminSubscriptionMIS() {
             <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Plan Distribution</h6>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
-                <Pie data={planData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                <Pie data={planData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name?: string; percent?: number }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`} labelLine={false}>
                   {planData.map((_, i) => <Cell key={i} fill={COLORS[(i + 3) % COLORS.length]} />)}
                 </Pie>
                 <Tooltip />

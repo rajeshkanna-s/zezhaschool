@@ -147,7 +147,7 @@ export default function AdminUserMIS() {
             <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Role Distribution</h6>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
-                <Pie data={roleData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                <Pie data={roleData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name?: string; percent?: number }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`} labelLine={false}>
                   {roleData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Pie>
                 <Tooltip />
@@ -160,7 +160,7 @@ export default function AdminUserMIS() {
             <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Active vs Inactive</h6>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
-                <Pie data={statusData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                <Pie data={statusData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name?: string; percent?: number }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`} labelLine={false}>
                   {statusData.map((_, i) => <Cell key={i} fill={[COLORS[1], COLORS[2]][i]} />)}
                 </Pie>
                 <Tooltip />

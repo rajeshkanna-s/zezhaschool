@@ -155,7 +155,7 @@ export default function AdminLoginHistoryMIS() {
             <h6 style={{ fontWeight: 700, marginBottom: 12, fontSize: '0.9rem' }}>Login by Role</h6>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
-                <Pie data={roleLoginData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name: string; percent: number }) => `${name.split(' ')[0]} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                <Pie data={roleLoginData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }: { name?: string; percent?: number }) => `${(name ?? '').split(' ')[0]} ${((percent ?? 0) * 100).toFixed(0)}%`} labelLine={false}>
                   {roleLoginData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Pie>
                 <Tooltip />
