@@ -1,12 +1,14 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   FiHome, FiBook, FiCreditCard, FiBookOpen,
-  FiAward, FiHelpCircle
+  FiAward, FiHelpCircle, FiChevronLeft, FiChevronRight
 } from 'react-icons/fi';
 
 interface SidebarProps {
   open: boolean;
   onClose: () => void;
+  collapsed: boolean;
+  onToggleCollapse: () => void;
 }
 
 const navItems = [
@@ -21,16 +23,25 @@ const supportItems = [
   { to: '/help', icon: <FiHelpCircle />, label: 'Help & Support' },
 ];
 
-export default function Sidebar({ open, onClose }: SidebarProps) {
+export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }: SidebarProps) {
   const location = useLocation();
 
   return (
     <>
       {open && <div className="sidebar-overlay" onClick={onClose} />}
-      <aside className={`sidebar ${open ? 'open' : ''}`}>
+      <aside className={`sidebar ${open ? 'open' : ''} ${collapsed ? 'collapsed' : ''}`}>
+        <button
+          className="sidebar-collapse-btn"
+          onClick={onToggleCollapse}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {collapsed ? <FiChevronRight /> : <FiChevronLeft />}
+        </button>
+
         <div className="sidebar-logo">
           <img src="/logo-icon.svg" alt="ZezhaSchool" />
-          <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>ZezhaSchool</span>
+          <span className="sidebar-logo-text" style={{ fontWeight: 700, fontSize: '1.1rem' }}>ZezhaSchool</span>
         </div>
 
         <nav className="sidebar-nav">
@@ -40,6 +51,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               <NavLink
                 key={item.to}
                 to={item.to}
+                title={collapsed ? item.label : undefined}
                 className={({ isActive }) =>
                   `sidebar-link ${isActive && location.pathname === item.to ? 'active' : ''}`
                 }
@@ -58,6 +70,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               <NavLink
                 key={item.to}
                 to={item.to}
+                title={collapsed ? item.label : undefined}
                 className={({ isActive }) =>
                   `sidebar-link ${isActive ? 'active' : ''}`
                 }
