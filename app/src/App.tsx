@@ -18,6 +18,8 @@ import Settings from './pages/Settings';
 import Help from './pages/Help';
 import Explore from './pages/Explore';
 import PageView from './pages/PageView';
+import Missions from './pages/Missions';
+import MissionPlayer from './pages/MissionPlayer';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminCourses from './pages/admin/AdminCourses';
@@ -30,6 +32,8 @@ import AdminLoginHistoryMIS from './pages/admin/AdminLoginHistoryMIS';
 import AdminCoursesMIS from './pages/admin/AdminCoursesMIS';
 import AdminPages from './pages/admin/AdminPages';
 import AdminPageBuilder from './pages/admin/AdminPageBuilder';
+import AdminMissions from './pages/admin/AdminMissions';
+import AdminMissionBuilder from './pages/admin/AdminMissionBuilder';
 
 export default function App() {
   return (
@@ -68,6 +72,8 @@ export default function App() {
             <Route path="/my-learning" element={<MyLearning />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/explore/:slug" element={<PageView />} />
+            <Route path="/missions" element={<Missions />} />
+            <Route path="/missions/:slug" element={<MissionPlayer />} />
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/certificates" element={<Certificates />} />
             <Route path="/settings" element={<Settings />} />
@@ -92,6 +98,9 @@ export default function App() {
             <Route path="pages" element={<AdminPages />} />
             <Route path="pages/new" element={<AdminPageBuilder />} />
             <Route path="pages/:id" element={<AdminPageBuilder />} />
+            <Route path="missions" element={<AdminMissions />} />
+            <Route path="missions/new" element={<AdminMissionBuilder />} />
+            <Route path="missions/:id" element={<AdminMissionBuilder />} />
             <Route path="mis/users" element={<AdminUserMIS />} />
             <Route path="mis/subscriptions" element={<AdminSubscriptionMIS />} />
             <Route path="mis/login-history" element={<AdminLoginHistoryMIS />} />

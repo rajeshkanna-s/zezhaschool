@@ -119,3 +119,75 @@ export interface ContentPage {
   updated_at: string;
   published_at: string | null;
 }
+
+/* ---- Missions (Learn → Play → Quiz → Done) ---- */
+
+export interface LearnCard {
+  icon?: string;
+  heading: string;
+  text: string;
+}
+export interface LearnStep {
+  id: string;
+  type: 'learn';
+  title: string;
+  cards: LearnCard[];
+}
+
+export interface SortBucket {
+  label: string;
+  emoji?: string;
+}
+export interface SortItem {
+  text: string;
+  bucket: number; // index into buckets
+}
+export interface SortStep {
+  id: string;
+  type: 'sort';
+  title: string;
+  prompt: string;
+  buckets: SortBucket[];
+  items: SortItem[];
+}
+
+export interface QuizQuestion {
+  q: string;
+  options: string[];
+  answer: number; // index of correct option
+}
+export interface QuizStep {
+  id: string;
+  type: 'quiz';
+  title: string;
+  questions: QuizQuestion[];
+}
+
+export type MissionStep = LearnStep | SortStep | QuizStep;
+export type MissionStepType = MissionStep['type'];
+
+export interface Mission {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  icon: string;
+  xp: number;
+  order_index: number;
+  steps: MissionStep[];
+  status: 'draft' | 'published';
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+  published_at: string | null;
+}
+
+export interface MissionProgress {
+  id: string;
+  user_id: string;
+  mission_id: string;
+  completed: boolean;
+  xp_earned: number;
+  completed_at: string | null;
+  created_at: string;
+}

@@ -1477,6 +1477,191 @@ a:hover {
 .row-action:hover { border-color: var(--primary); color: var(--primary); }
 .row-action.danger:hover { border-color: var(--danger); color: var(--danger); background: #fef2f2; }
 
+/* Small inline link buttons (builders) */
+.link-add, .link-remove {
+  background: none; border: none; cursor: pointer;
+  font-size: 0.8rem; font-weight: 600; padding: 2px 0;
+}
+.link-add { color: var(--primary); }
+.link-remove { color: var(--danger); }
+.link-add:hover, .link-remove:hover { text-decoration: underline; }
+
+/* ============================================================
+   Missions — list + player (Learn → Play → Quiz → Done)
+   ============================================================ */
+.missions-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: linear-gradient(135deg, var(--primary), #6366f1);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 22px 26px;
+  margin-bottom: 22px;
+}
+.missions-hero h2 { font-size: 1.5rem; font-weight: 800; }
+.missions-hero p { font-size: 0.9rem; opacity: 0.9; margin: 4px 0 0; }
+.missions-hero-stats { display: flex; gap: 12px; }
+.missions-stat {
+  background: rgba(255,255,255,0.15);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  text-align: center;
+  min-width: 84px;
+}
+.missions-stat .ms-val { display: block; font-size: 1.25rem; font-weight: 800; }
+.missions-stat .ms-label { font-size: 0.72rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.mission-tile {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  color: inherit;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+}
+.mission-tile:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--primary); }
+.mission-tile.done { border-color: #bbf7d0; background: #f6fef9; }
+.mission-tile-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.mission-tile-icon { font-size: 1.8rem; }
+.mission-tile-no { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); }
+.mission-tile-done { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 700; color: #16a34a; }
+.mission-tile-title { font-weight: 800; color: var(--secondary); font-size: 1.05rem; }
+.mission-tile-summary { color: var(--text-secondary); font-size: 0.85rem; margin-top: 5px; line-height: 1.5; }
+.mission-tile-foot { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 14px; }
+.mission-tile-xp { font-size: 0.82rem; font-weight: 700; color: var(--warning); }
+.mission-tile-go { display: inline-flex; align-items: center; gap: 5px; color: var(--primary); font-weight: 700; font-size: 0.85rem; }
+
+/* Player */
+.mission-player { max-width: 720px; margin: 0 auto; }
+.mission-head {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 18px;
+}
+.mission-head-top { display: flex; align-items: center; gap: 14px; }
+.mission-head-icon {
+  width: 50px; height: 50px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; border-radius: var(--radius-md);
+  background: var(--primary-light);
+}
+.mission-head-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; color: var(--text-muted); text-transform: uppercase; }
+.mission-head-top h2 { font-size: 1.2rem; font-weight: 800; color: var(--secondary); line-height: 1.25; }
+.mission-xp {
+  flex-shrink: 0;
+  background: #fef3c7; color: #b45309;
+  font-weight: 700; font-size: 0.8rem;
+  padding: 5px 12px; border-radius: 999px;
+}
+.mission-steps { display: flex; gap: 8px; margin-top: 16px; }
+.mission-step { flex: 1; text-align: center; }
+.mission-step-bar { display: block; height: 6px; border-radius: 3px; background: var(--border); transition: background 0.3s; }
+.mission-step-label { display: block; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); margin-top: 5px; }
+.mission-step.done .mission-step-bar { background: var(--success); }
+.mission-step.done .mission-step-label { color: var(--success); }
+.mission-step.active .mission-step-bar { background: var(--primary); }
+.mission-step.active .mission-step-label { color: var(--primary); }
+
+.mission-stage { }
+.mission-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+.mission-card h3 { font-size: 1.25rem; font-weight: 800; color: var(--secondary); }
+.mission-card > p { color: var(--text-secondary); margin: 8px 0 0; line-height: 1.6; }
+.mission-learn-icon {
+  width: 64px; height: 64px; margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; border-radius: var(--radius-lg);
+  background: var(--primary-light);
+}
+.mission-primary-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 22px;
+  background: var(--primary); color: #fff;
+  border: none; border-radius: 999px;
+  padding: 13px 30px; font-weight: 700; font-size: 0.95rem;
+  cursor: pointer; transition: background 0.15s, transform 0.15s;
+}
+.mission-primary-btn:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-1px); }
+.mission-primary-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.mission-substep { font-size: 0.78rem; color: var(--text-muted); margin-top: 12px; }
+
+/* Sort game */
+.sort-item {
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--secondary);
+  margin-bottom: 16px;
+}
+.sort-buckets { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.sort-bucket {
+  flex: 1; min-width: 130px;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-weight: 700; font-size: 0.95rem;
+  cursor: pointer; transition: all 0.15s;
+}
+.sort-bucket:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+.sort-bucket.correct { border-color: var(--success); background: #f0fdf4; color: #166534; }
+.sort-bucket.dim { opacity: 0.45; }
+.sort-bucket:disabled { cursor: default; }
+
+/* Quiz */
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-option {
+  display: flex; align-items: center; text-align: left;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  font-size: 0.95rem; font-weight: 600; color: var(--text-primary);
+  cursor: pointer; transition: all 0.15s;
+}
+.quiz-option:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+.quiz-option.correct { border-color: var(--success); background: #f0fdf4; color: #166534; }
+.quiz-option.wrong { border-color: var(--danger); background: #fef2f2; color: #991b1b; }
+.quiz-option.dim { opacity: 0.5; }
+.quiz-option:disabled { cursor: default; }
+
+.mission-feedback {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 16px; padding: 8px 16px; border-radius: 999px;
+  font-weight: 700; font-size: 0.88rem;
+}
+.mission-feedback.good { background: #f0fdf4; color: #166534; }
+.mission-feedback.bad { background: #fef2f2; color: #991b1b; }
+
+/* Done */
+.mission-done .mission-done-badge { font-size: 3.4rem; margin-bottom: 6px; }
+.mission-xp-earned {
+  display: inline-block;
+  background: #fef3c7; color: #b45309;
+  font-weight: 800; font-size: 1.05rem;
+  padding: 10px 22px; border-radius: 999px;
+  margin: 16px 0 4px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .sidebar {

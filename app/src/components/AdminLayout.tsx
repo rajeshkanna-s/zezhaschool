@@ -5,13 +5,14 @@ import { useSidebarLayout } from '../hooks/useSidebarLayout';
 import {
   FiHome, FiBook, FiUsers, FiCreditCard,
   FiSettings, FiLogOut, FiMenu, FiShield,
-  FiBarChart2, FiClock, FiChevronLeft, FiChevronRight, FiFileText
+  FiBarChart2, FiClock, FiChevronLeft, FiChevronRight, FiFileText, FiZap
 } from 'react-icons/fi';
 
 const adminNav = [
   { to: '/admin', icon: <FiHome />, label: 'Dashboard', end: true },
   { to: '/admin/courses', icon: <FiBook />, label: 'Courses' },
   { to: '/admin/pages', icon: <FiFileText />, label: 'Pages' },
+  { to: '/admin/missions', icon: <FiZap />, label: 'Missions' },
   { to: '/admin/users', icon: <FiUsers />, label: 'Users' },
   { to: '/admin/subscriptions', icon: <FiCreditCard />, label: 'Subscriptions' },
   { to: '/admin/settings', icon: <FiSettings />, label: 'Settings' },
@@ -30,6 +31,8 @@ const pageTitles: Record<string, string> = {
   '/admin/courses/new': 'Create Course',
   '/admin/pages': 'Content Pages',
   '/admin/pages/new': 'New Page',
+  '/admin/missions': 'Missions',
+  '/admin/missions/new': 'New Mission',
   '/admin/users': 'User Management',
   '/admin/subscriptions': 'Subscriptions',
   '/admin/settings': 'Admin Settings',
@@ -50,6 +53,7 @@ export default function AdminLayout() {
   const title =
     pageTitles[location.pathname] ||
     (location.pathname.startsWith('/admin/pages/') ? 'Page Builder' :
+     location.pathname.startsWith('/admin/missions/') ? 'Mission Builder' :
      location.pathname.startsWith('/admin/courses/') ? 'Edit Course' : 'Admin');
 
   const handleSignOut = async () => {

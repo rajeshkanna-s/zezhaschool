@@ -1,0 +1,131 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { supabase } from '../../lib/supabase';
+import type { Mission } from '../../types';
+import { FiPlus, FiEdit2, FiTrash2, FiEye, FiZap, FiSearch } from 'react-icons/fi';
+
+export default function AdminMissions() {
+  const [missions, setMissions] = useState<Mission[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'draft' | 'published'>('all');
+  const navigate = useNavigate();
+
+  useEffect(() => { load(); }, []);
+
+  const load = async () => {
+    const { data } = await supabase.from('missions').select('*')
+      .order('order_index', { ascending: true }).order('updated_at', { ascending: false });
+    if (data) setMissions(data as Mission[]);
+    setLoading(false);
+  };
+
+  const remove = async (m: Mission) => {
+    if (!confirm(`Delete "${m.title}"? This also removes student progress for it.`)) return;
+    const { error } = await supabase.from('missions').delete().eq('id', m.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Mission deleted');
+    setMissions(p => p.filter(x => x.id !== m.id));
+  };
+
+  const filtered = missions.filter(m => {
+    if (statusFilter !== 'all' && m.status !== statusFilter) return false;
+    if (search) {
+      const s = search.toLowerCase();
+      if (!m.title.toLowerCase().includes(s) && !m.slug.toLowerCase().includes(s)) return false;
+    }
+    return true;
+  });
+  const published = missions.filter(m => m.status === 'published').length;
+
+  if (loading) {
+    return <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 300 }}><div className="spinner" /></div>;
+  }
+
+  return (
+    <div>
+      <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+          <h2 style={{ fontSize: '1.3rem', fontWeight: 800 }}>Missions</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: 0 }}>
+            {missions.length} mission{missions.length === 1 ? '' : 's'} · {published} published
+          </p>
+        </div>
+        <button className="btn btn-primary" style={{ width: 'auto' }} onClick={() => navigate('/admin/missions/new')}>
+          <FiPlus style={{ marginRight: 6 }} /> New Mission
+        </button>
+      </div>
+
+      <div className="content-card mb-3" style={{ padding: '14px 18px' }}>
+        <div className="row g-2 align-items-end">
+          <div className="col-md-8">
+            <div style={{ position: 'relative' }}>
+              <FiSearch style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input className="form-control" placeholder="Search title or slug…" value={search} onChange={e => setSearch(e.target.value)} style={{ paddingLeft: 34 }} />
+            </div>
+          </div>
+          <div className="col-md-4">
+            <select className="form-select" value={statusFilter} onChange={e => setStatusFilter(e.target.value as any)}>
+              <option value="all">All statuses</option>
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="content-card dash-empty">
+          <FiZap />
+          <h4>No missions found</h4>
+          <p>Create an interactive mission with Learn, Play and Quiz steps.</p>
+          <button className="btn btn-primary btn-sm" style={{ width: 'auto' }} onClick={() => navigate('/admin/missions/new')}>
+            <FiPlus style={{ marginRight: 6 }} /> New Mission
+          </button>
+        </div>
+      ) : (
+        <div className="content-card" style={{ padding: 0, overflow: 'hidden' }}>
+          <div style={{ overflowX: 'auto' }}>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Mission</th>
+                  <th>Slug</th>
+                  <th>Steps</th>
+                  <th>XP</th>
+                  <th>Status</th>
+                  <th style={{ textAlign: 'right' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map(m => (
+                  <tr key={m.id}>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 600 }}>
+                        <span style={{ fontSize: '1.2rem' }}>{m.icon}</span>{m.title}
+                      </div>
+                    </td>
+                    <td style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>/missions/{m.slug}</td>
+                    <td>{Array.isArray(m.steps) ? m.steps.length : 0}</td>
+                    <td>⚡ {m.xp}</td>
+                    <td><span className={`status-badge ${m.status}`}>{m.status}</span></td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+                        {m.status === 'published' && (
+                          <button className="row-action" title="Play" onClick={() => window.open(`/missions/${m.slug}`, '_blank')}><FiEye /></button>
+                        )}
+                        <button className="row-action" title="Edit" onClick={() => navigate(`/admin/missions/${m.id}`)}><FiEdit2 /></button>
+                        <button className="row-action danger" title="Delete" onClick={() => remove(m)}><FiTrash2 /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
