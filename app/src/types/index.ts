@@ -80,3 +80,42 @@ export interface Enrollment {
   enrolled_at: string;
   updated_at: string;
 }
+
+/* ---- Content Pages (admin-built learning content) ---- */
+
+export type CalloutVariant = 'info' | 'success' | 'warning' | 'danger';
+
+export interface CardItem {
+  icon?: string;
+  title: string;
+  text?: string;
+  buttonLabel?: string;
+  buttonHref?: string;
+}
+
+export type PageBlock =
+  | { id: string; type: 'heading'; text: string; level: 1 | 2 | 3 }
+  | { id: string; type: 'text'; text: string }
+  | { id: string; type: 'image'; url: string; caption?: string }
+  | { id: string; type: 'video'; url: string }
+  | { id: string; type: 'callout'; text: string; variant: CalloutVariant }
+  | { id: string; type: 'button'; label: string; href: string }
+  | { id: string; type: 'cards'; items: CardItem[] }
+  | { id: string; type: 'divider' };
+
+export type PageBlockType = PageBlock['type'];
+
+export interface ContentPage {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  cover_image: string | null;
+  icon: string;
+  blocks: PageBlock[];
+  status: 'draft' | 'published';
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+  published_at: string | null;
+}
