@@ -87,7 +87,7 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }: 
 
         <div className="sidebar-footer">
           <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>
-            © 2025 ZezhaSchool
+            © {new Date().getFullYear()} ZezhaSchool
           </div>
         </div>
       </aside>
