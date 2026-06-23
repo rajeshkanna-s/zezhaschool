@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   FiHome, FiBook, FiCreditCard, FiBookOpen,
-  FiAward, FiHelpCircle, FiChevronLeft, FiChevronRight
+  FiAward, FiHelpCircle, FiChevronLeft, FiChevronRight, FiCompass
 } from 'react-icons/fi';
 
 interface SidebarProps {
@@ -14,6 +14,7 @@ interface SidebarProps {
 const navItems = [
   { to: '/', icon: <FiHome />, label: 'Dashboard' },
   { to: '/courses', icon: <FiBook />, label: 'Courses' },
+  { to: '/explore', icon: <FiCompass />, label: 'Explore' },
   { to: '/my-learning', icon: <FiBookOpen />, label: 'My Learning' },
   { to: '/subscription', icon: <FiCreditCard />, label: 'Subscription' },
   { to: '/certificates', icon: <FiAward />, label: 'Certificates' },

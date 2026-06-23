@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useSidebarLayout } from '../hooks/useSidebarLayout';
 import {
   FiHome, FiBook, FiUsers, FiCreditCard,
   FiSettings, FiLogOut, FiMenu, FiShield,
-  FiBarChart2, FiClock
+  FiBarChart2, FiClock, FiChevronLeft, FiChevronRight, FiFileText
 } from 'react-icons/fi';
 
 const adminNav = [
   { to: '/admin', icon: <FiHome />, label: 'Dashboard', end: true },
   { to: '/admin/courses', icon: <FiBook />, label: 'Courses' },
+  { to: '/admin/pages', icon: <FiFileText />, label: 'Pages' },
   { to: '/admin/users', icon: <FiUsers />, label: 'Users' },
   { to: '/admin/subscriptions', icon: <FiCreditCard />, label: 'Subscriptions' },
   { to: '/admin/settings', icon: <FiSettings />, label: 'Settings' },
@@ -26,6 +28,8 @@ const pageTitles: Record<string, string> = {
   '/admin': 'Admin Dashboard',
   '/admin/courses': 'Course Management',
   '/admin/courses/new': 'Create Course',
+  '/admin/pages': 'Content Pages',
+  '/admin/pages/new': 'New Page',
   '/admin/users': 'User Management',
   '/admin/subscriptions': 'Subscriptions',
   '/admin/settings': 'Admin Settings',
@@ -37,11 +41,16 @@ const pageTitles: Record<string, string> = {
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { collapsed, toggleCollapse, resizing, startResize, effectiveWidth } =
+    useSidebarLayout('admin-sidebar');
   const { profile, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const title = pageTitles[location.pathname] || 'Admin';
+  const title =
+    pageTitles[location.pathname] ||
+    (location.pathname.startsWith('/admin/pages/') ? 'Page Builder' :
+     location.pathname.startsWith('/admin/courses/') ? 'Edit Course' : 'Admin');
 
   const handleSignOut = async () => {
     await signOut();
@@ -49,12 +58,24 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="app-layout">
+    <div
+      className={`app-layout ${resizing ? 'resizing' : ''}`}
+      style={{ ['--sidebar-width' as string]: `${effectiveWidth}px` }}
+    >
       {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
-      <aside className={`sidebar admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
+      <aside className={`sidebar admin-sidebar ${sidebarOpen ? 'open' : ''} ${collapsed ? 'collapsed' : ''}`}>
+        <button
+          className="sidebar-collapse-btn"
+          onClick={toggleCollapse}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {collapsed ? <FiChevronRight /> : <FiChevronLeft />}
+        </button>
+
         <div className="sidebar-logo">
           <FiShield size={24} />
-          <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>Admin Panel</span>
+          <span className="sidebar-logo-text" style={{ fontWeight: 700, fontSize: '1.1rem' }}>Admin Panel</span>
         </div>
 
         <nav className="sidebar-nav">
@@ -65,6 +86,7 @@ export default function AdminLayout() {
                 key={item.to}
                 to={item.to}
                 end={item.end}
+                title={collapsed ? item.label : undefined}
                 className={({ isActive }) =>
                   `sidebar-link ${isActive ? 'active' : ''}`
                 }
@@ -81,6 +103,7 @@ export default function AdminLayout() {
               <NavLink
                 key={item.to}
                 to={item.to}
+                title={collapsed ? item.label : undefined}
                 className={({ isActive }) =>
                   `sidebar-link ${isActive ? 'active' : ''}`
                 }
@@ -93,20 +116,29 @@ export default function AdminLayout() {
           </div>
         </nav>
 
-        <div className="sidebar-footer">
+        <div className="sidebar-footer sidebar-footer-keep">
           <div
             className="sidebar-link"
             onClick={handleSignOut}
+            title={collapsed ? 'Sign Out' : undefined}
             style={{ color: 'rgba(255,255,255,0.6)' }}
           >
             <FiLogOut />
             <span>Sign Out</span>
           </div>
-          <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.3)', textAlign: 'center', marginTop: 8 }}>
+          <div className="sidebar-footer-text" style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.3)', textAlign: 'center', marginTop: 8 }}>
             Logged in as {profile?.full_name}
           </div>
         </div>
       </aside>
+
+      {!collapsed && (
+        <div
+          className="sidebar-resize-handle"
+          onMouseDown={startResize}
+          title="Drag to resize"
+        />
+      )}
 
       <div className="main-content">
         <header className="top-header">
