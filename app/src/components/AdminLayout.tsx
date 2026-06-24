@@ -5,10 +5,11 @@ import { useSidebarLayout } from '../hooks/useSidebarLayout';
 import ThemeToggle from './ThemeToggle';
 import NotificationsBell from './NotificationsBell';
 import AnnouncementBanner from './AnnouncementBanner';
+import CommandPalette from './CommandPalette';
 import {
   FiHome, FiBook, FiUsers, FiCreditCard,
   FiSettings, FiLogOut, FiMenu, FiShield,
-  FiBarChart2, FiClock, FiChevronLeft, FiChevronRight, FiFileText, FiZap
+  FiBarChart2, FiClock, FiChevronLeft, FiChevronRight, FiFileText, FiZap, FiSearch
 } from 'react-icons/fi';
 
 const adminNav = [
@@ -156,6 +157,9 @@ export default function AdminLayout() {
             <h1>{title}</h1>
           </div>
           <div className="top-header-right">
+            <button className="header-search" onClick={() => window.dispatchEvent(new Event('open-command-palette'))} title="Search (Ctrl+K)">
+              <FiSearch /><span>Search</span><kbd>Ctrl K</kbd>
+            </button>
             <ThemeToggle />
             <NotificationsBell />
             <span
@@ -177,6 +181,7 @@ export default function AdminLayout() {
           <Outlet />
         </div>
       </div>
+      <CommandPalette />
     </div>
   );
 }

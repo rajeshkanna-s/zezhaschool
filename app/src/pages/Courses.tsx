@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Course } from '../types';
-import { FiBook, FiClock, FiSearch, FiFilter } from 'react-icons/fi';
+import { useBookmarks } from '../hooks/useBookmarks';
+import { FiBook, FiClock, FiSearch, FiFilter, FiBookmark } from 'react-icons/fi';
 
 export default function Courses() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -10,6 +11,8 @@ export default function Courses() {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [difficultyFilter, setDifficultyFilter] = useState('all');
+  const [savedOnly, setSavedOnly] = useState(false);
+  const { isBookmarked, toggle, count } = useBookmarks();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,7 +37,8 @@ export default function Courses() {
       c.description?.toLowerCase().includes(search.toLowerCase());
     const matchCategory = categoryFilter === 'all' || c.category === categoryFilter;
     const matchDifficulty = difficultyFilter === 'all' || c.difficulty === difficultyFilter;
-    return matchSearch && matchCategory && matchDifficulty;
+    const matchSaved = !savedOnly || isBookmarked(c.id);
+    return matchSearch && matchCategory && matchDifficulty && matchSaved;
   });
 
   if (loading) {
@@ -95,6 +99,15 @@ export default function Courses() {
               <option value="advanced">Advanced</option>
             </select>
           </div>
+          <div className="col-12 col-md-1">
+            <button
+              className={`saved-filter-btn ${savedOnly ? 'active' : ''}`}
+              onClick={() => setSavedOnly(s => !s)}
+              title="Show saved courses"
+            >
+              <FiBookmark /> {count > 0 ? count : ''}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -119,6 +132,13 @@ export default function Courses() {
                   <span className={`course-badge ${course.is_free ? 'free' : 'premium'}`}>
                     {course.is_free ? 'Free' : 'Premium'}
                   </span>
+                  <button
+                    className={`bookmark-btn ${isBookmarked(course.id) ? 'on' : ''}`}
+                    title={isBookmarked(course.id) ? 'Remove bookmark' : 'Save course'}
+                    onClick={(e) => { e.stopPropagation(); toggle({ item_type: 'course', item_id: course.id, title: course.title, link: `/courses/${course.id}`, icon: '📚' }); }}
+                  >
+                    <FiBookmark />
+                  </button>
                 </div>
                 <div className="course-body">
                   <div className="course-category">{course.category}</div>

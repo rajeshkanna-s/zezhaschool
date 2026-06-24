@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { FiMenu, FiSettings, FiUser, FiLogOut } from 'react-icons/fi';
+import { FiMenu, FiSettings, FiUser, FiLogOut, FiSearch } from 'react-icons/fi';
 import ThemeToggle from './ThemeToggle';
 import NotificationsBell from './NotificationsBell';
+
+const openSearch = () => window.dispatchEvent(new Event('open-command-palette'));
 
 interface HeaderProps {
   title: string;
@@ -48,6 +50,11 @@ export default function Header({ title, onMenuClick }: HeaderProps) {
       </div>
 
       <div className="top-header-right">
+        <button className="header-search" onClick={openSearch} title="Search (Ctrl+K)">
+          <FiSearch />
+          <span>Search</span>
+          <kbd>Ctrl K</kbd>
+        </button>
         <ThemeToggle />
         <NotificationsBell />
 

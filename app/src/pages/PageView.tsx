@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { ContentPage } from '../types';
 import PageRenderer from '../components/PageRenderer';
+import { recordRecent } from '../lib/recent';
 import { FiArrowLeft } from 'react-icons/fi';
 
 export default function PageView() {
@@ -22,7 +23,10 @@ export default function PageView() {
         .eq('status', 'published')
         .maybeSingle();
       if (error || !data) setNotFound(true);
-      else setPage(data as ContentPage);
+      else {
+        setPage(data as ContentPage);
+        recordRecent({ type: 'page', title: data.title, to: `/explore/${data.slug}`, icon: data.icon || '📄' });
+      }
       setLoading(false);
     })();
   }, [slug]);

@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import AnnouncementBanner from './AnnouncementBanner';
+import CommandPalette from './CommandPalette';
 import { useSidebarLayout } from '../hooks/useSidebarLayout';
 
 const pageTitles: Record<string, string> = {
@@ -48,6 +49,7 @@ export default function AppLayout() {
           <Outlet />
         </div>
       </div>
+      <CommandPalette />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import type { Mission, MissionStep, LearnStep, SortStep, QuizStep } from '../types';
+import { recordRecent } from '../lib/recent';
 import { FiArrowLeft, FiArrowRight, FiCheck, FiX } from 'react-icons/fi';
 
 const stepLabel = (s: MissionStep) => (s.type === 'learn' ? 'Learn' : s.type === 'sort' ? 'Play' : 'Quiz');
@@ -27,6 +28,7 @@ export default function MissionPlayer() {
         .from('missions').select('*').eq('slug', slug).maybeSingle();
       if (!data) { setNotFound(true); setLoading(false); return; }
       setMission(data as Mission);
+      recordRecent({ type: 'mission', title: data.title, to: `/missions/${data.slug}`, icon: data.icon || '🚀' });
       if (user) {
         const { data: prog } = await supabase
           .from('mission_progress').select('completed').eq('user_id', user.id).eq('mission_id', data.id).maybeSingle();

@@ -1247,6 +1247,91 @@ a:hover {
 [data-theme="dark"] .announce-banner.warning { background: #2a1f05; border-color: #5b4708; color: #fcd34d; }
 [data-theme="dark"] .announce-banner.danger { background: #2a0a0a; border-color: #7f1d1d; color: #fca5a5; }
 
+/* Header search trigger */
+.header-search {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--bg-main); border: 1px solid var(--border);
+  color: var(--text-muted); border-radius: 999px;
+  padding: 7px 12px; font-size: 0.85rem; cursor: pointer;
+  transition: all 0.15s;
+}
+.header-search:hover { border-color: var(--primary); color: var(--text-secondary); }
+.header-search span { font-weight: 500; }
+.header-search kbd, .cmdk kbd {
+  font-family: inherit; font-size: 0.68rem; font-weight: 600;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 4px; padding: 2px 6px; color: var(--text-muted);
+}
+@media (max-width: 600px) { .header-search span, .header-search kbd { display: none; } }
+
+/* Command palette */
+.cmdk-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(15,23,42,0.45);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 12vh;
+}
+.cmdk {
+  width: 560px; max-width: 92vw;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-lg);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.cmdk-input-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.cmdk-input-row input {
+  flex: 1; border: none; outline: none; background: none;
+  font-size: 1rem; color: var(--text-primary);
+}
+.cmdk-results { max-height: 56vh; overflow-y: auto; padding: 6px; }
+.cmdk-empty { padding: 28px; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+.cmdk-group {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--text-muted);
+  padding: 10px 12px 4px; display: flex; align-items: center; gap: 6px;
+}
+.cmdk-item {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  border: none; background: none; cursor: pointer;
+  padding: 10px 12px; border-radius: var(--radius-sm); color: var(--text-primary);
+}
+.cmdk-item.active { background: var(--primary-light); }
+.cmdk-icon {
+  width: 34px; height: 34px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-main); border-radius: var(--radius-sm); font-size: 1.05rem;
+}
+.cmdk-text { display: flex; flex-direction: column; min-width: 0; }
+.cmdk-title { font-weight: 600; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cmdk-sub { font-size: 0.76rem; color: var(--text-muted); }
+.cmdk-enter { margin-left: auto; color: var(--primary); flex-shrink: 0; }
+
+/* Bookmarks */
+.bookmark-btn {
+  position: absolute; top: 10px; right: 10px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.9); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary); box-shadow: var(--shadow-sm);
+  transition: all 0.15s; z-index: 2;
+}
+.bookmark-btn:hover { color: var(--primary); transform: scale(1.08); }
+.bookmark-btn.on { background: var(--primary); color: #fff; }
+[data-theme="dark"] .bookmark-btn { background: rgba(22,31,50,0.92); }
+.saved-filter-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  width: 100%; height: 38px;
+  border: 1.5px solid var(--border); background: var(--bg-card);
+  border-radius: var(--radius-sm); cursor: pointer;
+  color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;
+  transition: all 0.15s;
+}
+.saved-filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+.saved-filter-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
 /* Admin Styles */
 .admin-sidebar {
   background: #1a1a2e;
