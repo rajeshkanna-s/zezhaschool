@@ -3,6 +3,7 @@ import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useSidebarLayout } from '../hooks/useSidebarLayout';
 import ThemeToggle from './ThemeToggle';
+import NotificationsBell from './NotificationsBell';
 import {
   FiHome, FiBook, FiUsers, FiCreditCard,
   FiSettings, FiLogOut, FiMenu, FiShield,
@@ -155,6 +156,7 @@ export default function AdminLayout() {
           </div>
           <div className="top-header-right">
             <ThemeToggle />
+            <NotificationsBell />
             <span
               style={{
                 background: 'var(--danger)',
