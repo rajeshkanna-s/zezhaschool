@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { SiteSettingsProvider } from './contexts/SiteSettingsContext';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/AppLayout';
@@ -33,6 +34,7 @@ import AdminLoginHistoryMIS from './pages/admin/AdminLoginHistoryMIS';
 import AdminCoursesMIS from './pages/admin/AdminCoursesMIS';
 import AdminPages from './pages/admin/AdminPages';
 import AdminPageBuilder from './pages/admin/AdminPageBuilder';
+import AdminSiteSettings from './pages/admin/AdminSiteSettings';
 import AdminMissions from './pages/admin/AdminMissions';
 import AdminMissionBuilder from './pages/admin/AdminMissionBuilder';
 
@@ -40,6 +42,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
+      <SiteSettingsProvider>
       <AuthProvider>
         <Toaster
           position="top-right"
@@ -103,6 +106,7 @@ export default function App() {
             <Route path="missions" element={<AdminMissions />} />
             <Route path="missions/new" element={<AdminMissionBuilder />} />
             <Route path="missions/:id" element={<AdminMissionBuilder />} />
+            <Route path="site-settings" element={<AdminSiteSettings />} />
             <Route path="mis/users" element={<AdminUserMIS />} />
             <Route path="mis/subscriptions" element={<AdminSubscriptionMIS />} />
             <Route path="mis/login-history" element={<AdminLoginHistoryMIS />} />
@@ -112,6 +116,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
+      </SiteSettingsProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

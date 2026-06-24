@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import AnnouncementBanner from './AnnouncementBanner';
 import { useSidebarLayout } from '../hooks/useSidebarLayout';
 
 const pageTitles: Record<string, string> = {
@@ -43,6 +44,7 @@ export default function AppLayout() {
       <div className="main-content">
         <Header title={title} onMenuClick={() => setSidebarOpen(true)} />
         <div className="page-content">
+          <AnnouncementBanner />
           <Outlet />
         </div>
       </div>

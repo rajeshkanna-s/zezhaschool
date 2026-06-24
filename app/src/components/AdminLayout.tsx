@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useSidebarLayout } from '../hooks/useSidebarLayout';
 import ThemeToggle from './ThemeToggle';
 import NotificationsBell from './NotificationsBell';
+import AnnouncementBanner from './AnnouncementBanner';
 import {
   FiHome, FiBook, FiUsers, FiCreditCard,
   FiSettings, FiLogOut, FiMenu, FiShield,
@@ -17,7 +18,7 @@ const adminNav = [
   { to: '/admin/missions', icon: <FiZap />, label: 'Missions' },
   { to: '/admin/users', icon: <FiUsers />, label: 'Users' },
   { to: '/admin/subscriptions', icon: <FiCreditCard />, label: 'Subscriptions' },
-  { to: '/admin/settings', icon: <FiSettings />, label: 'Settings' },
+  { to: '/admin/site-settings', icon: <FiSettings />, label: 'Site Settings' },
 ];
 
 const misNav = [
@@ -37,7 +38,7 @@ const pageTitles: Record<string, string> = {
   '/admin/missions/new': 'New Mission',
   '/admin/users': 'User Management',
   '/admin/subscriptions': 'Subscriptions',
-  '/admin/settings': 'Admin Settings',
+  '/admin/site-settings': 'Site Settings',
   '/admin/mis/users': 'User MIS Report',
   '/admin/mis/subscriptions': 'Subscription MIS Report',
   '/admin/mis/login-history': 'Login History MIS',
@@ -172,6 +173,7 @@ export default function AdminLayout() {
           </div>
         </header>
         <div className="page-content">
+          <AnnouncementBanner />
           <Outlet />
         </div>
       </div>
