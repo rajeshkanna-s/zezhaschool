@@ -4,7 +4,10 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import AnnouncementBanner from './AnnouncementBanner';
 import CommandPalette from './CommandPalette';
+import MaintenanceScreen from './MaintenanceScreen';
 import { useSidebarLayout } from '../hooks/useSidebarLayout';
+import { useSiteSettings } from '../contexts/SiteSettingsContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const pageTitles: Record<string, string> = {
   '/': 'Dashboard',
@@ -21,8 +24,15 @@ export default function AppLayout() {
   const { collapsed, toggleCollapse, resizing, startResize, effectiveWidth } =
     useSidebarLayout('sidebar');
   const location = useLocation();
+  const { settings } = useSiteSettings();
+  const { profile } = useAuth();
 
   const title = pageTitles[location.pathname] || 'ZezhaSchool';
+
+  // Maintenance mode locks out students; admins keep full access.
+  if (settings.maintenance_mode && profile?.role !== 'admin') {
+    return <MaintenanceScreen />;
+  }
 
   return (
     <div

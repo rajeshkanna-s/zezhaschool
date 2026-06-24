@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useSiteSettings } from '../contexts/SiteSettingsContext';
 import { supabase } from '../lib/supabase';
-import { FiMail, FiLock, FiAlertTriangle } from 'react-icons/fi';
+import { FiMail, FiLock, FiAlertTriangle, FiTool } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
 const ADMIN_EMAILS = [
@@ -16,6 +17,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [sessionConflict, setSessionConflict] = useState(false);
+  const { settings } = useSiteSettings();
   const { signIn, forceSignIn } = useAuth() as ReturnType<typeof useAuth> & {
     forceSignIn: (email: string, password: string) => Promise<{ error: string | null }>;
   };
@@ -84,6 +86,13 @@ export default function Login() {
         </div>
         <h2 className="auth-title">Welcome Back</h2>
         <p className="auth-subtitle">Sign in to continue your learning journey</p>
+
+        {settings.maintenance_mode && (
+          <div className="login-maintenance-note">
+            <FiTool />
+            <span>{settings.maintenance_message}</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="form-floating">

@@ -10,16 +10,19 @@ export interface SiteSettings {
   announcement: string;
   announcement_active: boolean;
   announcement_variant: 'info' | 'success' | 'warning' | 'danger';
-  social_twitter: string;
-  social_facebook: string;
   social_instagram: string;
+  social_linkedin: string;
+  social_website: string;
   maintenance_mode: boolean;
+  maintenance_message: string;
 }
 
 const DEFAULTS: SiteSettings = {
   site_name: 'ZezhaSchool', tagline: 'Learn & Grow', contact_email: '', support_url: '',
   announcement: '', announcement_active: false, announcement_variant: 'info',
-  social_twitter: '', social_facebook: '', social_instagram: '', maintenance_mode: false,
+  social_instagram: '', social_linkedin: '', social_website: '',
+  maintenance_mode: false,
+  maintenance_message: "We're performing scheduled maintenance. Please check back soon.",
 };
 
 interface Ctx {

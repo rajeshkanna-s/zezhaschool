@@ -1,15 +1,23 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../contexts/AuthContext';
 import { useSiteSettings } from '../../contexts/SiteSettingsContext';
 import type { SiteSettings } from '../../contexts/SiteSettingsContext';
-import { FiSave, FiGlobe, FiBell, FiShare2, FiTool } from 'react-icons/fi';
+import { FiSave, FiGlobe, FiBell, FiShare2, FiTool, FiLock, FiX } from 'react-icons/fi';
 
 export default function AdminSiteSettings() {
+  const { user } = useAuth();
   const { settings, refresh } = useSiteSettings();
   const [form, setForm] = useState<SiteSettings>(settings);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  // Maintenance password-confirm modal
+  const [pwModal, setPwModal] = useState(false);
+  const [pw, setPw] = useState('');
+  const [pwBusy, setPwBusy] = useState(false);
+  const [pwError, setPwError] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -27,14 +35,45 @@ export default function AdminSiteSettings() {
       site_name: form.site_name, tagline: form.tagline, contact_email: form.contact_email,
       support_url: form.support_url, announcement: form.announcement,
       announcement_active: form.announcement_active, announcement_variant: form.announcement_variant,
-      social_twitter: form.social_twitter, social_facebook: form.social_facebook,
-      social_instagram: form.social_instagram, maintenance_mode: form.maintenance_mode,
+      social_instagram: form.social_instagram, social_linkedin: form.social_linkedin,
+      social_website: form.social_website, maintenance_message: form.maintenance_message,
       updated_at: new Date().toISOString(),
     }).eq('id', 1);
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     await refresh();
     toast.success('Site settings saved');
+  };
+
+  // Maintenance takes effect immediately (independent of "Save changes")
+  const setMaintenance = async (value: boolean) => {
+    const { error } = await supabase.from('site_settings')
+      .update({ maintenance_mode: value, maintenance_message: form.maintenance_message, updated_at: new Date().toISOString() })
+      .eq('id', 1);
+    if (error) { toast.error(error.message); return false; }
+    set({ maintenance_mode: value });
+    await refresh();
+    return true;
+  };
+
+  const onToggleMaintenance = async () => {
+    if (form.maintenance_mode) {
+      // turning OFF — restore access immediately
+      if (await setMaintenance(false)) toast.success('Maintenance mode disabled');
+    } else {
+      // turning ON — require password confirmation first
+      setPw(''); setPwError(''); setPwModal(true);
+    }
+  };
+
+  const confirmEnable = async () => {
+    if (!user?.email) return;
+    setPwBusy(true); setPwError('');
+    const { error: authErr } = await supabase.auth.signInWithPassword({ email: user.email, password: pw });
+    if (authErr) { setPwError('Incorrect password. Please try again.'); setPwBusy(false); return; }
+    const ok = await setMaintenance(true);
+    setPwBusy(false);
+    if (ok) { setPwModal(false); toast.success('Maintenance mode enabled — students will see the notice'); }
   };
 
   if (loading) {
@@ -105,16 +144,16 @@ export default function AdminSiteSettings() {
         <h3><FiShare2 style={{ marginRight: 8 }} /> Social Links</h3>
         <div className="row g-3">
           <div className="col-md-4">
-            <label className="settings-label">Twitter / X</label>
-            <input className="form-control" value={form.social_twitter} onChange={e => set({ social_twitter: e.target.value })} placeholder="https://x.com/…" />
-          </div>
-          <div className="col-md-4">
-            <label className="settings-label">Facebook</label>
-            <input className="form-control" value={form.social_facebook} onChange={e => set({ social_facebook: e.target.value })} placeholder="https://facebook.com/…" />
-          </div>
-          <div className="col-md-4">
             <label className="settings-label">Instagram</label>
             <input className="form-control" value={form.social_instagram} onChange={e => set({ social_instagram: e.target.value })} placeholder="https://instagram.com/…" />
+          </div>
+          <div className="col-md-4">
+            <label className="settings-label">LinkedIn</label>
+            <input className="form-control" value={form.social_linkedin} onChange={e => set({ social_linkedin: e.target.value })} placeholder="https://linkedin.com/…" />
+          </div>
+          <div className="col-md-4">
+            <label className="settings-label">Website</label>
+            <input className="form-control" value={form.social_website} onChange={e => set({ social_website: e.target.value })} placeholder="https://…" />
           </div>
         </div>
       </div>
@@ -123,10 +162,46 @@ export default function AdminSiteSettings() {
       <div className="settings-section">
         <h3><FiTool style={{ marginRight: 8 }} /> Maintenance</h3>
         <div className="pref-row">
-          <div><div className="pref-title">Maintenance mode</div><div className="pref-desc">Show a maintenance notice to students (admins keep access).</div></div>
-          <button type="button" className={`switch ${form.maintenance_mode ? 'on' : ''}`} onClick={() => set({ maintenance_mode: !form.maintenance_mode })}><span className="switch-knob" /></button>
+          <div>
+            <div className="pref-title">Maintenance mode {form.maintenance_mode && <span className="status-badge published" style={{ marginLeft: 6 }}>ON</span>}</div>
+            <div className="pref-desc">Students see a maintenance notice and can't use the app. Admins keep full access.</div>
+          </div>
+          <button type="button" className={`switch ${form.maintenance_mode ? 'on' : ''}`} onClick={onToggleMaintenance}><span className="switch-knob" /></button>
+        </div>
+        <div className="mt-2">
+          <label className="settings-label">Notice shown to students</label>
+          <textarea className="form-control" rows={2} value={form.maintenance_message} onChange={e => set({ maintenance_message: e.target.value })} placeholder="We're performing scheduled maintenance…" />
+          <small className="text-muted">Saved with “Save changes”; applied live while maintenance is on.</small>
         </div>
       </div>
+
+      {/* Password confirmation modal */}
+      {pwModal && (
+        <div className="modal-overlay" onMouseDown={() => !pwBusy && setPwModal(false)}>
+          <div className="modal-card" onMouseDown={e => e.stopPropagation()}>
+            <div className="modal-head">
+              <h4><FiLock style={{ marginRight: 8 }} /> Confirm with your password</h4>
+              <button className="modal-close" onClick={() => !pwBusy && setPwModal(false)}><FiX /></button>
+            </div>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: 14 }}>
+              Enabling maintenance mode will lock out all students immediately. Enter your admin password to confirm.
+            </p>
+            <input
+              type="password" className="form-control" autoFocus value={pw}
+              onChange={e => { setPw(e.target.value); setPwError(''); }}
+              onKeyDown={e => { if (e.key === 'Enter' && pw) confirmEnable(); }}
+              placeholder="Admin password"
+            />
+            {pwError && <div style={{ color: 'var(--danger)', fontSize: '0.82rem', marginTop: 8 }}>{pwError}</div>}
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 18 }}>
+              <button className="btn btn-outline-secondary btn-sm" style={{ width: 'auto' }} onClick={() => setPwModal(false)} disabled={pwBusy}>Cancel</button>
+              <button className="btn btn-primary btn-sm" style={{ width: 'auto' }} onClick={confirmEnable} disabled={!pw || pwBusy}>
+                {pwBusy ? 'Verifying…' : 'Enable maintenance'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
