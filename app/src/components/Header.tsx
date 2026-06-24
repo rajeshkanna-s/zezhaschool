@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FiMenu, FiBell, FiSettings, FiUser, FiLogOut } from 'react-icons/fi';
+import ThemeToggle from './ThemeToggle';
 
 interface HeaderProps {
   title: string;
@@ -46,6 +47,7 @@ export default function Header({ title, onMenuClick }: HeaderProps) {
       </div>
 
       <div className="top-header-right">
+        <ThemeToggle />
         <button className="header-btn" title="Notifications">
           <FiBell />
         </button>
