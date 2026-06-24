@@ -4,6 +4,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { SiteSettingsProvider } from './contexts/SiteSettingsContext';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import SessionSync from './components/SessionSync';
 import AppLayout from './components/AppLayout';
 import AdminLayout from './components/AdminLayout';
 
@@ -44,6 +45,7 @@ export default function App() {
       <ThemeProvider>
       <SiteSettingsProvider>
       <AuthProvider>
+        <SessionSync />
         <Toaster
           position="top-right"
           toastOptions={{

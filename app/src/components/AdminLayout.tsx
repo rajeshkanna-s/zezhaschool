@@ -181,7 +181,7 @@ export default function AdminLayout() {
           <Outlet />
         </div>
       </div>
-      <CommandPalette />
+      <CommandPalette scope="admin" />
     </div>
   );
 }

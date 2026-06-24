@@ -59,7 +59,7 @@ export default function AppLayout() {
           <Outlet />
         </div>
       </div>
-      <CommandPalette />
+      <CommandPalette scope="student" />
     </div>
   );
 }
