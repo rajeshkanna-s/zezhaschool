@@ -43,9 +43,12 @@
   color-scheme: dark;
 }
 
-/* Density / base font scale */
-html[data-density="compact"] { font-size: 15px; }
+/* Density / base font scale (acts like a zoom level) */
+html[data-density="small"] { font-size: 13px; }
+html[data-density="compact"] { font-size: 14.5px; }
 html[data-density="comfortable"] { font-size: 16px; }
+html[data-density="spacious"] { font-size: 18px; }
+html[data-density="large"] { font-size: 20px; }
 
 /* Smooth theme transitions on the big surfaces */
 body,

@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import type { ReactNode } from 'react';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
-export type Density = 'comfortable' | 'compact';
+export type Density = 'small' | 'compact' | 'comfortable' | 'spacious' | 'large';
 
 export interface Accent {
   id: string;

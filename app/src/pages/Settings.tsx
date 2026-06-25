@@ -136,8 +136,11 @@ function AppearanceTab() {
     { id: 'system', label: 'System', icon: <FiMonitor /> },
   ];
   const densities: { id: Density; label: string }[] = [
-    { id: 'comfortable', label: 'Comfortable' },
+    { id: 'small', label: 'Small' },
     { id: 'compact', label: 'Compact' },
+    { id: 'comfortable', label: 'Default' },
+    { id: 'spacious', label: 'Spacious' },
+    { id: 'large', label: 'Large' },
   ];
 
   return (
