@@ -10,6 +10,7 @@ export interface SiteSettings {
   announcement: string;
   announcement_active: boolean;
   announcement_variant: 'info' | 'success' | 'warning' | 'danger';
+  announcement_audience: 'all' | 'subscribers' | 'free';
   social_instagram: string;
   social_linkedin: string;
   social_website: string;
@@ -19,7 +20,7 @@ export interface SiteSettings {
 
 const DEFAULTS: SiteSettings = {
   site_name: 'ZezhaSchool', tagline: 'Learn & Grow', contact_email: '', support_url: '',
-  announcement: '', announcement_active: false, announcement_variant: 'info',
+  announcement: '', announcement_active: false, announcement_variant: 'info', announcement_audience: 'all',
   social_instagram: '', social_linkedin: '', social_website: '',
   maintenance_mode: false,
   maintenance_message: "We're performing scheduled maintenance. Please check back soon.",

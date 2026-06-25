@@ -5,6 +5,7 @@ import Header from './Header';
 import AnnouncementBanner from './AnnouncementBanner';
 import CommandPalette from './CommandPalette';
 import MaintenanceScreen from './MaintenanceScreen';
+import Footer from './Footer';
 import { useSidebarLayout } from '../hooks/useSidebarLayout';
 import { useSiteSettings } from '../contexts/SiteSettingsContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -58,6 +59,7 @@ export default function AppLayout() {
           <AnnouncementBanner />
           <Outlet />
         </div>
+        <Footer />
       </div>
       <CommandPalette scope="student" />
     </div>

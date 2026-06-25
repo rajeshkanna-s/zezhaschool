@@ -23,6 +23,7 @@ import Explore from './pages/Explore';
 import PageView from './pages/PageView';
 import Missions from './pages/Missions';
 import MissionPlayer from './pages/MissionPlayer';
+import { Terms, RefundPolicy, Faq } from './pages/Legal';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminCourses from './pages/admin/AdminCourses';
@@ -85,6 +86,9 @@ export default function App() {
             <Route path="/certificates" element={<Certificates />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/help" element={<Help />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
+            <Route path="/faq" element={<Faq />} />
           </Route>
 
           {/* Admin Routes */}

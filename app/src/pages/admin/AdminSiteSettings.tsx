@@ -29,20 +29,26 @@ export default function AdminSiteSettings() {
 
   const set = (patch: Partial<SiteSettings>) => setForm(f => ({ ...f, ...patch }));
 
+  // Save a specific group of fields (used by the per-section buttons)
+  const saveFields = async (fields: Partial<SiteSettings>, message = 'Saved') => {
+    const { error } = await supabase.from('site_settings')
+      .update({ ...fields, updated_at: new Date().toISOString() }).eq('id', 1);
+    if (error) { toast.error(error.message); return; }
+    await refresh();
+    toast.success(message);
+  };
+
   const save = async () => {
     setSaving(true);
-    const { error } = await supabase.from('site_settings').update({
+    await saveFields({
       site_name: form.site_name, tagline: form.tagline, contact_email: form.contact_email,
       support_url: form.support_url, announcement: form.announcement,
       announcement_active: form.announcement_active, announcement_variant: form.announcement_variant,
+      announcement_audience: form.announcement_audience,
       social_instagram: form.social_instagram, social_linkedin: form.social_linkedin,
       social_website: form.social_website, maintenance_message: form.maintenance_message,
-      updated_at: new Date().toISOString(),
-    }).eq('id', 1);
+    }, 'Site settings saved');
     setSaving(false);
-    if (error) { toast.error(error.message); return; }
-    await refresh();
-    toast.success('Site settings saved');
   };
 
   // Maintenance takes effect immediately (independent of "Save changes")
@@ -123,7 +129,7 @@ export default function AdminSiteSettings() {
           <button type="button" className={`switch ${form.announcement_active ? 'on' : ''}`} onClick={() => set({ announcement_active: !form.announcement_active })}><span className="switch-knob" /></button>
         </div>
         <div className="row g-3 mt-1">
-          <div className="col-md-8">
+          <div className="col-12">
             <label className="settings-label">Message</label>
             <input className="form-control" value={form.announcement} onChange={e => set({ announcement: e.target.value })} placeholder="e.g. New courses added this week!" />
           </div>
@@ -136,6 +142,23 @@ export default function AdminSiteSettings() {
               <option value="danger">Danger</option>
             </select>
           </div>
+          <div className="col-md-8">
+            <label className="settings-label">Show to (audience)</label>
+            <select className="form-select" value={form.announcement_audience} onChange={e => set({ announcement_audience: e.target.value as SiteSettings['announcement_audience'] })}>
+              <option value="all">All students</option>
+              <option value="subscribers">Subscribed students only</option>
+              <option value="free">Free (non-subscribed) students only</option>
+            </select>
+          </div>
+        </div>
+        <div className="d-flex justify-content-end mt-3">
+          <button className="btn btn-primary btn-sm" style={{ width: 'auto' }}
+            onClick={() => saveFields({
+              announcement: form.announcement, announcement_active: form.announcement_active,
+              announcement_variant: form.announcement_variant, announcement_audience: form.announcement_audience,
+            }, 'Announcement saved')}>
+            <FiSave style={{ marginRight: 6 }} /> Save announcement
+          </button>
         </div>
       </div>
 
@@ -155,6 +178,15 @@ export default function AdminSiteSettings() {
             <label className="settings-label">Website</label>
             <input className="form-control" value={form.social_website} onChange={e => set({ social_website: e.target.value })} placeholder="https://…" />
           </div>
+        </div>
+        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '10px 0 0' }}>Shown in the footer on student pages.</p>
+        <div className="d-flex justify-content-end mt-2">
+          <button className="btn btn-primary btn-sm" style={{ width: 'auto' }}
+            onClick={() => saveFields({
+              social_instagram: form.social_instagram, social_linkedin: form.social_linkedin, social_website: form.social_website,
+            }, 'Social links saved')}>
+            <FiSave style={{ marginRight: 6 }} /> Save links
+          </button>
         </div>
       </div>
 
