@@ -19,6 +19,7 @@ const adminNav = [
   { to: '/admin/missions', icon: <FiZap />, label: 'Missions' },
   { to: '/admin/users', icon: <FiUsers />, label: 'Users' },
   { to: '/admin/subscriptions', icon: <FiCreditCard />, label: 'Subscriptions' },
+  { to: '/admin/documents', icon: <FiFileText />, label: 'Legal & Help' },
   { to: '/admin/site-settings', icon: <FiSettings />, label: 'Site Settings' },
 ];
 
@@ -39,6 +40,7 @@ const pageTitles: Record<string, string> = {
   '/admin/missions/new': 'New Mission',
   '/admin/users': 'User Management',
   '/admin/subscriptions': 'Subscriptions',
+  '/admin/documents': 'Legal & Help Pages',
   '/admin/site-settings': 'Site Settings',
   '/admin/mis/users': 'User MIS Report',
   '/admin/mis/subscriptions': 'Subscription MIS Report',

@@ -18,12 +18,11 @@ import MyLearning from './pages/MyLearning';
 import Subscription from './pages/Subscription';
 import Certificates from './pages/Certificates';
 import Settings from './pages/Settings';
-import Help from './pages/Help';
+import DocumentPage from './pages/DocumentPage';
 import Explore from './pages/Explore';
 import PageView from './pages/PageView';
 import Missions from './pages/Missions';
 import MissionPlayer from './pages/MissionPlayer';
-import { Terms, RefundPolicy, Faq } from './pages/Legal';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminCourses from './pages/admin/AdminCourses';
@@ -39,6 +38,7 @@ import AdminPageBuilder from './pages/admin/AdminPageBuilder';
 import AdminSiteSettings from './pages/admin/AdminSiteSettings';
 import AdminMissions from './pages/admin/AdminMissions';
 import AdminMissionBuilder from './pages/admin/AdminMissionBuilder';
+import AdminDocuments from './pages/admin/AdminDocuments';
 
 export default function App() {
   return (
@@ -85,10 +85,10 @@ export default function App() {
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/certificates" element={<Certificates />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/help" element={<Help />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/refund-policy" element={<RefundPolicy />} />
-            <Route path="/faq" element={<Faq />} />
+            <Route path="/help" element={<DocumentPage slug="help" />} />
+            <Route path="/terms" element={<DocumentPage slug="terms" />} />
+            <Route path="/refund-policy" element={<DocumentPage slug="refund-policy" />} />
+            <Route path="/faq" element={<DocumentPage slug="faq" />} />
           </Route>
 
           {/* Admin Routes */}
@@ -113,6 +113,7 @@ export default function App() {
             <Route path="missions/new" element={<AdminMissionBuilder />} />
             <Route path="missions/:id" element={<AdminMissionBuilder />} />
             <Route path="site-settings" element={<AdminSiteSettings />} />
+            <Route path="documents" element={<AdminDocuments />} />
             <Route path="mis/users" element={<AdminUserMIS />} />
             <Route path="mis/subscriptions" element={<AdminSubscriptionMIS />} />
             <Route path="mis/login-history" element={<AdminLoginHistoryMIS />} />
