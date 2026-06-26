@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Course } from '../types';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { FiBook, FiClock, FiSearch, FiFilter, FiBookmark } from 'react-icons/fi';
 
 export default function Courses() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryParam = searchParams.get('category') || 'all';
+  const difficultyParam = searchParams.get('difficulty') || 'all';
+
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('all');
-  const [difficultyFilter, setDifficultyFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState(categoryParam);
+  const [difficultyFilter, setDifficultyFilter] = useState(difficultyParam);
   const [savedOnly, setSavedOnly] = useState(false);
   const { isBookmarked, toggle, count } = useBookmarks();
   const navigate = useNavigate();
@@ -18,6 +22,14 @@ export default function Courses() {
   useEffect(() => {
     loadCourses();
   }, []);
+
+  useEffect(() => {
+    setCategoryFilter(categoryParam);
+  }, [categoryParam]);
+
+  useEffect(() => {
+    setDifficultyFilter(difficultyParam);
+  }, [difficultyParam]);
 
   const loadCourses = async () => {
     const { data } = await supabase
@@ -35,7 +47,12 @@ export default function Courses() {
   const filtered = courses.filter(c => {
     const matchSearch = c.title.toLowerCase().includes(search.toLowerCase()) ||
       c.description?.toLowerCase().includes(search.toLowerCase());
-    const matchCategory = categoryFilter === 'all' || c.category === categoryFilter;
+    
+    // Fuzzy match: match if DB category contains param OR param contains DB category
+    const matchCategory = categoryFilter === 'all' || 
+      c.category.toLowerCase().includes(categoryFilter.toLowerCase()) ||
+      categoryFilter.toLowerCase().includes(c.category.toLowerCase());
+
     const matchDifficulty = difficultyFilter === 'all' || c.difficulty === difficultyFilter;
     const matchSaved = !savedOnly || isBookmarked(c.id);
     return matchSearch && matchCategory && matchDifficulty && matchSaved;
@@ -78,7 +95,18 @@ export default function Courses() {
               <select
                 className="form-select"
                 value={categoryFilter}
-                onChange={e => setCategoryFilter(e.target.value)}
+                onChange={e => {
+                  const val = e.target.value;
+                  setCategoryFilter(val);
+                  setSearchParams(prev => {
+                    if (val === 'all') {
+                      prev.delete('category');
+                    } else {
+                      prev.set('category', val);
+                    }
+                    return prev;
+                  });
+                }}
                 style={{ borderRadius: 'var(--radius-sm)', border: '1.5px solid var(--border)' }}
               >
                 <option value="all">All Categories</option>
@@ -90,7 +118,18 @@ export default function Courses() {
             <select
               className="form-select"
               value={difficultyFilter}
-              onChange={e => setDifficultyFilter(e.target.value)}
+              onChange={e => {
+                const val = e.target.value;
+                setDifficultyFilter(val);
+                setSearchParams(prev => {
+                  if (val === 'all') {
+                    prev.delete('difficulty');
+                  } else {
+                    prev.set('difficulty', val);
+                  }
+                  return prev;
+                });
+              }}
               style={{ borderRadius: 'var(--radius-sm)', border: '1.5px solid var(--border)' }}
             >
               <option value="all">All Levels</option>

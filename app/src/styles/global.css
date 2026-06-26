@@ -3365,4 +3365,374 @@ a:hover {
   }
 }
 
+/* --- Student Portal Top Header Layout (No Sidebar) --- */
+.student-portal-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  overflow-x: hidden;
+  position: relative;
+}
+
+.student-portal-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.student-portal-page {
+  flex: 1;
+  width: 100%;
+}
+
+/* --- Student Top Header Menu Styles --- */
+.student-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  height: 72px;
+  width: 100%;
+}
+
+.student-header-container {
+  width: 100%;
+  height: 100%;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.student-header-left {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  height: 100%;
+}
+
+.student-header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--secondary);
+}
+
+.student-header-logo img {
+  height: 38px;
+  object-fit: contain;
+}
+
+.student-header-logo-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.student-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 4px 6px;
+  height: 48px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.student-nav-link {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 6px 16px;
+  border-radius: 100px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 38px;
+}
+
+.student-nav-link:hover,
+.student-nav-link.active {
+  color: var(--primary);
+  background-color: var(--primary-light);
+}
+
+/* Dropdown Container */
+.student-nav-dropdown-trigger {
+  position: relative;
+  height: auto;
+  display: flex;
+  align-items: center;
+}
+
+/* Dropdowns display on hover */
+.student-nav-dropdown-trigger:hover .student-mega-menu,
+.student-nav-dropdown-trigger:hover .student-standard-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Standard Dropdown */
+.student-standard-dropdown {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  z-index: 200;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 280px;
+  padding: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.student-standard-dropdown::before,
+.student-mega-menu::before {
+  content: '';
+  position: absolute;
+  top: -24px;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: transparent;
+}
+
+.student-dropdown-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.student-dropdown-item:hover {
+  background: var(--bg-main);
+}
+
+.student-dropdown-item svg {
+  font-size: 1.15rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.student-dropdown-item .title {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--secondary);
+}
+
+.student-dropdown-item .desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+
+/* Mega Menu */
+.student-mega-menu {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  z-index: 200;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 580px;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.student-mega-menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.student-mega-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.student-mega-column-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.student-mega-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.student-mega-item:hover {
+  background: var(--bg-main);
+  transform: translateY(-1px);
+}
+
+.student-mega-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.student-mega-item.item-blue .student-mega-item-icon { background: #eff6ff; color: #2563eb; }
+.student-mega-item.item-cyan .student-mega-item-icon { background: #ecfeff; color: #0891b2; }
+.student-mega-item.item-gold .student-mega-item-icon { background: #fffbeb; color: #d97706; }
+.student-mega-item.item-purple .student-mega-item-icon { background: #faf5ff; color: #9333ea; }
+
+.student-mega-item-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--secondary);
+}
+
+.student-mega-item-desc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* Right Side Controls */
+.student-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Mobile Toggle */
+.student-mobile-toggle {
+  display: none;
+}
+
+/* Mobile Drawer Overlay */
+.student-mobile-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.student-mobile-drawer-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mobile Drawer Side Panel */
+.student-mobile-drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: -280px;
+  width: 280px;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-lg);
+  z-index: 2001;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.student-mobile-drawer-overlay.open .student-mobile-drawer {
+  transform: translateX(280px);
+}
+
+.student-mobile-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.student-mobile-drawer-close {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.student-mobile-drawer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.student-mobile-section-header {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 16px;
+  margin-bottom: 8px;
+  padding-left: 12px;
+}
+
+/* Responsive Hide Rule */
+@media (max-width: 1024px) {
+  .student-header-nav {
+    display: none;
+  }
+  .student-mobile-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    font-size: 1.35rem;
+    color: var(--secondary);
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+  .student-mobile-toggle:hover {
+    background: var(--bg-main);
+  }
+}
+
 

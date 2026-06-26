@@ -11,6 +11,7 @@ import AdminLayout from './components/AdminLayout';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import AdminLogin from './pages/AdminLogin';
+import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
 import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
@@ -61,6 +62,9 @@ export default function App() {
         />
 
         <Routes>
+          {/* Public Root Landing Route */}
+          <Route path="/" element={<LandingPage />} />
+
           {/* Auth Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
@@ -74,7 +78,7 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/" element={<Home />} />
+            <Route path="/dashboard" element={<Home />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:id" element={<CourseDetail />} />
             <Route path="/my-learning" element={<MyLearning />} />

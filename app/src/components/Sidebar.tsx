@@ -12,17 +12,17 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { to: '/', icon: <FiHome />, label: 'Dashboard' },
-  { to: '/courses', icon: <FiBook />, label: 'Courses' },
-  { to: '/explore', icon: <FiCompass />, label: 'Explore' },
-  { to: '/missions', icon: <FiZap />, label: 'Missions' },
-  { to: '/my-learning', icon: <FiBookOpen />, label: 'My Learning' },
-  { to: '/subscription', icon: <FiCreditCard />, label: 'Subscription' },
-  { to: '/certificates', icon: <FiAward />, label: 'Certificates' },
+  { to: '/dashboard', icon: <FiHome />, label: 'Dashboard', color: '#3b82f6', bgLight: 'rgba(59, 130, 246, 0.12)' },
+  { to: '/courses', icon: <FiBook />, label: 'Courses', color: '#f59e0b', bgLight: 'rgba(245, 158, 11, 0.12)' },
+  { to: '/explore', icon: <FiCompass />, label: 'Explore', color: '#06b6d4', bgLight: 'rgba(6, 182, 212, 0.12)' },
+  { to: '/missions', icon: <FiZap />, label: 'Missions', color: '#a855f7', bgLight: 'rgba(168, 85, 247, 0.12)' },
+  { to: '/my-learning', icon: <FiBookOpen />, label: 'My Learning', color: '#10b981', bgLight: 'rgba(16, 185, 129, 0.12)' },
+  { to: '/subscription', icon: <FiCreditCard />, label: 'Subscription', color: '#ec4899', bgLight: 'rgba(236, 72, 153, 0.12)' },
+  { to: '/certificates', icon: <FiAward />, label: 'Certificates', color: '#eab308', bgLight: 'rgba(234, 179, 8, 0.12)' },
 ];
 
 const supportItems = [
-  { to: '/help', icon: <FiHelpCircle />, label: 'Help & Support' },
+  { to: '/help', icon: <FiHelpCircle />, label: 'Help & Support', color: '#f43f5e', bgLight: 'rgba(244, 63, 94, 0.12)' },
 ];
 
 export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }: SidebarProps) {
@@ -57,10 +57,14 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }: 
                 className={({ isActive }) =>
                   `sidebar-link ${isActive && location.pathname === item.to ? 'active' : ''}`
                 }
+                style={{
+                  ['--icon-color' as any]: item.color,
+                  ['--icon-bg' as any]: item.bgLight,
+                }}
                 onClick={onClose}
-                end={item.to === '/'}
+                end={item.to === '/dashboard'}
               >
-                {item.icon}
+                <span className="sidebar-link-icon-container">{item.icon}</span>
                 <span>{item.label}</span>
               </NavLink>
             ))}
@@ -76,9 +80,13 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }: 
                 className={({ isActive }) =>
                   `sidebar-link ${isActive ? 'active' : ''}`
                 }
+                style={{
+                  ['--icon-color' as any]: item.color,
+                  ['--icon-bg' as any]: item.bgLight,
+                }}
                 onClick={onClose}
               >
-                {item.icon}
+                <span className="sidebar-link-icon-container">{item.icon}</span>
                 <span>{item.label}</span>
               </NavLink>
             ))}
