@@ -1,5 +1,10 @@
 import type { ReactNode } from 'react';
 
+/** Stable id from heading text, for table-of-contents anchors. */
+export function docSlug(s: string): string {
+  return s.toLowerCase().replace(/[^\w]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
 /** Inline formatting: **bold** */
 function inline(text: string): ReactNode[] {
   return text.split(/(\*\*[^*]+\*\*)/g).map((p, i) =>
@@ -8,10 +13,9 @@ function inline(text: string): ReactNode[] {
 }
 
 /**
- * Minimal, safe markdown for admin-authored documents.
- * Parsed line-by-line so a "## Heading" is only the heading line — the text
- * beneath it becomes its own paragraph.
- * Supports:  ## Heading · # Title · - bullet · blank-line paragraphs · **bold**
+ * Minimal, safe markdown for admin-authored documents, parsed line-by-line.
+ * Supports:  # Title · ## Heading · - bullet · blank-line paragraphs · **bold**
+ * Headings get an id so the page table-of-contents can link to them.
  */
 export default function DocRenderer({ content }: { content: string }) {
   if (!content.trim()) {
@@ -44,9 +48,15 @@ export default function DocRenderer({ content }: { content: string }) {
   for (const raw of lines) {
     const t = raw.trim();
     if (!t) { flushPara(); flushList(); continue; }
-    if (t.startsWith('## ')) { flushPara(); flushList(); out.push(<h3 key={`h${key++}`}>{inline(t.slice(3))}</h3>); }
-    else if (t.startsWith('# ')) { flushPara(); flushList(); out.push(<h2 key={`h${key++}`}>{inline(t.slice(2))}</h2>); }
-    else if (t.startsWith('- ')) { flushPara(); list.push(t.slice(2)); }
+    if (t.startsWith('## ')) {
+      flushPara(); flushList();
+      const text = t.slice(3);
+      out.push(<h3 id={docSlug(text)} key={`h${key++}`}>{inline(text)}</h3>);
+    } else if (t.startsWith('# ')) {
+      flushPara(); flushList();
+      const text = t.slice(2);
+      out.push(<h2 id={docSlug(text)} key={`h${key++}`}>{inline(text)}</h2>);
+    } else if (t.startsWith('- ')) { flushPara(); list.push(t.slice(2)); }
     else { flushList(); para.push(t); }
   }
   flushPara();
