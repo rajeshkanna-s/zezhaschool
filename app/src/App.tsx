@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import AdminLogin from './pages/AdminLogin';
 import LandingPage from './pages/LandingPage';
+import HomePage from './pages/HomePage';
 import Home from './pages/Home';
 import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
@@ -62,8 +63,9 @@ export default function App() {
         />
 
         <Routes>
-          {/* Public Root Landing Route */}
-          <Route path="/" element={<LandingPage />} />
+          {/* Public Root Home Route */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/landing" element={<LandingPage />} />
 
           {/* Auth Routes */}
           <Route path="/login" element={<Login />} />
